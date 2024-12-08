@@ -1,0 +1,13 @@
+{
+    "name": "frontend",
+    "version": "1.0.0",
+    "description": "Frontend project",
+    "main": "index.html",
+    "scripts": {
+        "start": "live-server"
+    },
+    "devDependencies": {},
+    "author": "",
+    "license": "ISC",
+    "keywords": []
+}

@@ -85,6 +85,11 @@ def process_articles(articles, content_type, tone):
             content_type=content_type, 
             tone=tone
         )
-        news = {"title": article.get("title", "No Title"), "summary": summary}
+        news = {
+            "title": article.get("title", "No Title"),
+            "summary": summary,
+            "author": article.get("author", "Unknown Author"),
+            "url": article.get("url", "No URL Provided")
+        }
         list_of_summaries.append(news)
     return list_of_summaries

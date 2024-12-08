@@ -3,10 +3,13 @@ from typing import Optional
 from app.services.news_service import NewsService
 from app.services.text_generator import TextGenerator
 from app.services.image_generator import ImageGenerator
+from fastapi.responses import HTMLResponse
+
 import os
 
 # Import the ContentGenerator class
 from app.utils.content_generator import ContentGenerator
+
 
 router = APIRouter(prefix="/content", tags=["content"])
 
@@ -17,7 +20,13 @@ IMGFLIP_PASSWORD = 'Cyberme@50'
 
 content_generator = ContentGenerator(TAVUS_API_KEY, IMGFLIP_USERNAME, IMGFLIP_PASSWORD)
 
-@router.post("/")
+@router.get("/", response_class=HTMLResponse)
+async def get_html():
+    with open("templates/index.html", "r") as file:
+        html_content = file.read()
+    return HTMLResponse(content=html_content)
+
+@router.post("/content")
 async def generate_content(
     content_type: str = Query(..., description="Type of content to generate: 'meme', 'video', or 'text'"),
     category: Optional[str] = None,
@@ -25,9 +34,12 @@ async def generate_content(
     tone: Optional[str] = "professional",
     format: Optional[str] = "social_media",
     # Meme-specific params
-    template_id: Optional[str] = Query(None, description="Meme template ID"),
-    top_text: Optional[str] = Query(None, description="Top text for the meme"),
-    bottom_text: Optional[str] = Query(None, description="Bottom text for the meme"),
+    template_id='181913649',
+    top_text='When you use APIs',
+    bottom_text='When you do everything manually',
+    # template_id: Optional[str] = Query(None, description="Meme template ID"),
+    # top_text: Optional[str] = Query(None, description="Top text for the meme"),
+    # bottom_text: Optional[str] = Query(None, description="Bottom text for the meme"),
     output_path: str = Query("/content/meme.jpg", description="Path to save the generated meme"),
     # Video-specific params
     script: Optional[str] = Query(None, description="Script for the video"),

@@ -3,13 +3,14 @@ from app.core.config import settings
 from fastapi import HTTPException
 import google.generativeai as genai
 
+
 class NewsService:
     def __init__(self):
         # if not settings.NEWS_API_KEY:
         #     raise HTTPException(status_code=500, detail="News API key not configured")
         # if not settings.GENAI_API_KEY:
         #     raise HTTPException(status_code=500, detail="Generative AI API key not configured")
-        NEWS_API_KEY = "5c79806ac8d3477b843ffb4f52292802"  # Replace with your actual news API key
+        NEWS_API_KEY = "9d8d3ea474424f75b4ffc00c8ddd3931"  # Replace with your actual news API key
         NEWS_BASE_URL = "https://api.worldnewsapi.com/search-news"
         self.base_url = NEWS_BASE_URL
         self.api_key = NEWS_API_KEY

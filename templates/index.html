@@ -184,6 +184,37 @@
             transform: scale(1.05);
         }
 
+        .loader-text-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .error-message {
+        color: red;
+        font-weight: bold;
+        text-align: center;
+    }
+
         footer {
             background: #333;
             color: #fff;
@@ -244,10 +275,6 @@
             <button id="generate-button">Generate</button>
         </section>
         <!-- Loader Block -->
-        <div class="loader-container" id="loader-container">
-            <div class="loader"></div>
-            <p>Generating content, please wait...</p>
-        </div>
         <section class="output-section">
             <h2>Generated Content:</h2>
             <div id="output-container">Your generated content will appear here...</div>
@@ -272,26 +299,33 @@
                 return;
             }
             let content = '';
+    try {
+    
+        outputContainer.innerHTML = `
+            <div class="loader-text-container">
+                <div class="spinner"></div>
+                <span>Generating content, please wait...</span>
+            </div>
+        `;
 
-            const res = await fetch(`http://127.0.0.1:8000/api/v1/content/content?content_type=${contentType}&category=${tone}&query=${prompt}`, {
+            const res = await fetch(`/api/v1/content/content?content_type=${contentType}&category=${tone}&query=${prompt}`, {
                 method: 'POST',
                 // body: JSON.stringify({ query: prompt, category:tone, content_type:contentType })
             })
+
+            if(!res.ok) throw new Error('Something went wrong')
            
             const data = await res.json()
 
             // button.textContent='Generate'
 
-            console.log('---->', data)
-
             if (contentType === 'image') {
                 content = '<img src="https://via.placeholder.com/600x400.png?text=Generated+Image" alt="Generated Image">';
             } else if (contentType === 'video') {
                 content = `
-        <video controls>
-            <source src="${data?.hosted_url}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <p>
+           Video will be loaded after few minutes.
+        </p>
         <p>
             <a href="${data?.video_response?.hosted_url}" target="_blank">Click here to watch the video</a>
         </p>
@@ -350,6 +384,17 @@
             }
 
             outputContainer.innerHTML = content;
+
+        } catch (error) {
+            console.log(error);
+            
+    outputContainer.innerHTML = `
+                <div class="error-message">
+                    <p>Error generating content. Please try again.</p>
+                </div>
+            `;
+    
+}
         });
     </script>
 </body>

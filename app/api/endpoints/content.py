@@ -13,7 +13,7 @@ import os
 from app.utils.content_generator import ContentGenerator
 
 
-router = APIRouter(prefix="/content", tags=["content"])
+router = APIRouter(prefix="", tags=["content"])
 
 # Initialize ContentGenerator with your credentials
 TAVUS_API_KEY = 'b2c0cbb7e3484d2496c1c766f49acf5b'  # Replace with your actual Tavus API key
@@ -28,7 +28,7 @@ async def get_html():
         html_content = file.read()
     return HTMLResponse(content=html_content)
 
-@router.post("/content")
+@router.post("/")
 async def generate_content(
     content_type: str = Query(..., description="Type of content to generate: 'meme', 'video', or 'text'"),
     category: Optional[str] = None,

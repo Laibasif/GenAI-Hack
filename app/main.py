@@ -24,6 +24,6 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router, prefix=settings.API_V1_STR)
-app.include_router(news.router, prefix=settings.API_V1_STR)
-app.include_router(content.router, prefix=settings.API_V1_STR)
+app.include_router(auth.router)
+app.include_router(news.router)
+app.include_router(content.router)

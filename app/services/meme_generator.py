@@ -23,11 +23,14 @@ class MemeGenerator:
             dict: The extracted JSON as a Python dictionary.
         """
         try:
+            
             # Use regex to locate the JSON structure in the output
             json_match = re.search(r"\{.*\}", llm_output, re.DOTALL)
             if json_match:
                 json_str = json_match.group(0)
                 # Parse the JSON string into a Python dictionary
+                
+                
                 return json.loads(json_str)
             else:
                 raise ValueError("No JSON structure found in the output.")

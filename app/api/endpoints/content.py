@@ -55,23 +55,28 @@ async def generate_content(
         news_service = NewsService()
 
         # Fetch news articles
-        news_data = await news_service.fetch_news(category, query)
-        if not news_data.get("news"):
+        news_data = await news_service.fetch_news_from_rag(category, query, tone)
+        if not news_data.get("summary"):
             raise HTTPException(status_code=404, detail="No news articles found")
 
-        # Summarize the first article
-        article = news_data["news"][0]
-        summary = await news_service.summarize_article(
-            title=article.get("title", "Untitled"),
-            content=article.get("text", "No content available"),
-            tone=tone,
-            format=format
-        )
+        print("..news data", news_data)
+        summary=news_data.get("summary")
+        print("summary", summary)
+        print("url", news_data.get("source_url","No url found"))
+        
+        # # Summarize the first article
+        # article = news_data["news"][0]
+        # summary = await news_service.summarize_article(
+        #     title=article.get("title", "Untitled"),
+        #     content=article.get("text", "No content available"),
+        #     tone=tone,
+        #     format=format
+        # )
 
         if content_type == "text" or content_type == "post":
             # If content type is text, return the summarized article
             return {
-                "original_article": article,
+                "original_article": {"link": news_data.get("source_url","No url found")},
                 "generated_summary": summary,
                 "content_type": "text"
             }

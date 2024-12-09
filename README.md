@@ -16,25 +16,26 @@ Ensure you have the following installed:
    git clone <repository-url>
    cd <repository-directory>
 2. Install the required dependencies:
- - pip install -r requirements.txt
- - Running the FastAPI Server
+   ```bash
+   pip install -r requirements.txt
+3. Running the FastAPI Server
  - Start the server using the following command:
-
-4. uvicorn app.main:app --reload
+   ```bash
+    uvicorn app.main:app --reload
  - The server will run on the default URL:
  - http://127.0.0.1:8000/
  - Using the Application
  - Open your web browser and navigate to the root URL:
  - http://127.0.0.1:8000/
    
-5. Enter the required details:
+4. Enter the required details:
 
  - Prompt: Provide a text prompt for content generation.
  - Tone: Select the desired tone:
    - Conversational
    - Formal
    - Humorous
- - Output Type: Choose the type of output:
+5 - Output Type: Choose the type of output:
    - Text
    - Post
    - Meme

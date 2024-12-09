@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 from app.services.news_service import NewsService
+from app.services.meme_generator import MemeGenerator
 from app.services.text_generator import TextGenerator
 from app.services.image_generator import ImageGenerator
 from fastapi.responses import HTMLResponse
+import google.generativeai as genai
 
 import os
 
@@ -37,13 +39,9 @@ async def generate_content(
     template_id='181913649',
     top_text='When you use APIs',
     bottom_text='When you do everything manually',
-    # template_id: Optional[str] = Query(None, description="Meme template ID"),
-    # top_text: Optional[str] = Query(None, description="Top text for the meme"),
-    # bottom_text: Optional[str] = Query(None, description="Bottom text for the meme"),
     output_path: str = Query("/content/meme.jpg", description="Path to save the generated meme"),
     # Video-specific params
-    script: Optional[str] = Query(None, description="Script for the video"),
-    replica_id: Optional[str] = Query(None, description="Replica ID for the Tavus avatar"),
+    replica_id: Optional[str] = 'r79e1c033f',
     background_url: Optional[str] = Query("", description="Optional background URL"),
     video_name: Optional[str] = Query("generated_video", description="Name for the generated video")
 ):
@@ -52,26 +50,56 @@ async def generate_content(
     Supported types: 'meme', 'video', 'text'.
     """
     try:
-        if content_type == "meme":
-            if not all([template_id, top_text, bottom_text]):
-                raise HTTPException(status_code=400, detail="Missing parameters for meme generation")
-            
-            meme_path = content_generator.create_meme(
-                template_id=template_id,
-                top_text=top_text,
-                bottom_text=bottom_text
+    
+        # Initialize NewsService
+        news_service = NewsService()
+
+        # Fetch news articles
+        news_data = await news_service.fetch_news(category, query)
+        if not news_data.get("news"):
+            raise HTTPException(status_code=404, detail="No news articles found")
+
+        # Summarize the first article
+        article = news_data["news"][0]
+        summary = await news_service.summarize_article(
+            title=article.get("title", "Untitled"),
+            content=article.get("text", "No content available"),
+            tone=tone,
+            format=format
+        )
+
+        if content_type == "text" or content_type == "post":
+            # If content type is text, return the summarized article
+            return {
+                "original_article": article,
+                "generated_summary": summary,
+                "content_type": "text"
+            }
+
+        elif content_type == "meme":
+            # # Use the summarized content as meme text
+            # top_text = "Summary of News"
+            # bottom_text = summary
+            meme_service = MemeGenerator()
+            meme = meme_service.create_meme(
+                template_id,
+                content=summary,  # Pass the summarized news as content
+                tone=tone         # Pass the selected tone
             )
-            if meme_path:
-                return {"message": "Meme generated successfully", "meme_path": meme_path}
+            # meme_path = meme_service.create_meme(
+            #     template_id=template_id,
+            #     top_text=top_text,
+            #     bottom_text=bottom_text
+            # )
+            if meme:
+                return {"message": "Meme generated successfully", "meme_path": meme}
             else:
                 raise HTTPException(status_code=500, detail="Meme generation failed")
 
         elif content_type == "video":
-            if not all([script, replica_id]):
-                raise HTTPException(status_code=400, detail="Missing parameters for video generation")
-            
+            # Use the summarized content as the script for the video
             video_response = content_generator.generate_video_with_tavus(
-                script=script,
+                script=summary,
                 replica_id=replica_id,
                 background_url=background_url,
                 video_name=video_name
@@ -81,29 +109,6 @@ async def generate_content(
             else:
                 raise HTTPException(status_code=500, detail="Video generation failed")
 
-        elif content_type == "text":
-            # Initialize NewsService
-            news_service = NewsService()
-
-            # Fetch news articles
-            news_data = await news_service.fetch_news(category, query)
-            if not news_data.get("news"):
-                raise HTTPException(status_code=404, detail="No news articles found")
-
-            # Summarize the first article
-            article = news_data["news"][0]
-            summary = await news_service.summarize_article(
-                title=article.get("title", "Untitled"),
-                content=article.get("text", "No content available"),
-                tone=tone,
-                format=format
-            )
-
-            return {
-                "original_article": article,
-                "generated_summary": summary,
-                "content_type": "text"
-            }
         else:
             raise HTTPException(status_code=400, detail="Unsupported content type. Use 'meme', 'video', or 'text'.")
 

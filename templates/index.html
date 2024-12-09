@@ -216,7 +216,7 @@
 
         <section class="input-section">
             <div class="input-group">
-                <label for="user-input">Your Prompt:</label>
+                <label for="user-input"> news topic, keyword or categor:</label>
                 <textarea id="user-input" rows="4" placeholder="e.g., LinkedIn post about AI trends..."></textarea>
             </div>
 
@@ -287,16 +287,64 @@
             if (contentType === 'image') {
                 content = '<img src="https://via.placeholder.com/600x400.png?text=Generated+Image" alt="Generated Image">';
             } else if (contentType === 'video') {
-                content = '<video controls><source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">Your browser does not support the video tag.</video>';
+                content = `
+        <video controls>
+            <source src="${data?.hosted_url}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <p>
+            <a href="${data?.video_response?.hosted_url}" target="_blank">Click here to watch the video</a>
+        </p>
+    `;
             } else if (contentType === 'meme') {
                 content = `<img src="${data?.meme_path}" alt="Generated Meme">`;
-            } else {
+            }else if (contentType === "post") {
+    content = `
+        <div style="
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            border: 1px solid #ddd;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 16px auto;
+        ">
+            <!-- Left Side: Content -->
+            <div style="flex: 3; padding-right: 16px;">
+                <h2 style="margin-bottom: 8px; font-size: 1.5rem; color: #333;">
+                    ${data?.original_article?.title || "No Title Available"}
+                </h2>
+                <p style="margin-bottom: 8px; font-size: 1rem; color: #555;">
+                    ${data?.generated_summary || "No Summary Available"}
+                </p>
+                <p style="margin-bottom: 8px; font-size: 0.9rem; color: #777;">
+                    <strong>Author:</strong> ${data?.original_article?.creator || "Unknown Author"}
+                </p>
+                <a href="${data?.original_article?.link}" target="_blank" style="font-size: 1rem; color: #007BFF; text-decoration: none;">
+                    ${data?.original_article?.link || "Read More"}
+                </a>
+            </div>
+
+            <!-- Right Side: Image -->
+            <div style="flex: 1;">
+                <img 
+                    src="${data?.original_article?.image_url || 'https://via.placeholder.com/150'}" 
+                    alt="Article Image" 
+                    style="width: 100%; height: auto; border-radius: 8px;"
+                />
+            </div>
+        </div>
+    `;
+}
+             else {
                 content = `
                 <div style={{display: "flex", flexDirection:"column"}}>
                     <h2>${data?.original_article?.title || ""}</h2>
                 <p>${data?.generated_summary || ""}</p>
 
-                <a href="${data?.original_article?.url}">${data?.original_article?.url || ""}</a>
+                <a href="${data?.original_article?.link}">${data?.original_article?.link || ""}</a>
                     </div>
                 `;
             }

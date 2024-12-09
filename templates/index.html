@@ -307,7 +307,7 @@
             </div>
         `;
 
-            const res = await fetch(`/api/v1/content/content?content_type=${contentType}&category=${tone}&query=${prompt}`, {
+            const res = await fetch(`/?content_type=${contentType}&category=${tone}&query=${prompt}`, {
                 method: 'POST',
                 // body: JSON.stringify({ query: prompt, category:tone, content_type:contentType })
             })

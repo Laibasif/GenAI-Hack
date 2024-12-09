@@ -350,20 +350,20 @@
                     ${data?.original_article?.title || "No Title Available"}
                 </h2>
                 <p style="margin-bottom: 8px; font-size: 1rem; color: #555;">
-                    ${data?.generated_summary || "No Summary Available"}
+                    ${data?.original_article?.summary || "No Summary Available"}
                 </p>
                 <p style="margin-bottom: 8px; font-size: 0.9rem; color: #777;">
-                    <strong>Author:</strong> ${data?.original_article?.creator || "Unknown Author"}
+                    <strong>Author:</strong> ${data?.original_article?.author || "Unknown Author"}
                 </p>
-                <a href="${data?.original_article?.link}" target="_blank" style="font-size: 1rem; color: #007BFF; text-decoration: none;">
-                    ${data?.original_article?.link || "Read More"}
+                <a href="${data?.original_article?.source_url}" target="_blank" style="font-size: 1rem; color: #007BFF; text-decoration: none;">
+                    Read More
                 </a>
             </div>
 
             <!-- Right Side: Image -->
             <div style="flex: 1;">
                 <img 
-                    src="${data?.original_article?.image_url || 'https://via.placeholder.com/150'}" 
+                    src="${data?.original_article?.picture_url || 'https://via.placeholder.com/150'}" 
                     alt="Article Image" 
                     style="width: 100%; height: auto; border-radius: 8px;"
                 />
@@ -377,7 +377,7 @@
                     <h2>${data?.original_article?.title || ""}</h2>
                 <p>${data?.generated_summary || ""}</p>
 
-                <a href="${data?.original_article?.link}">${data?.original_article?.link || ""}</a>
+                <a href="${data?.original_article?.source_url}"> source link</a>
                     </div>
                 `;
             }

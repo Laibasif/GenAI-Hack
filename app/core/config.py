@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     IMGFLIP_USERNAME: Optional[str] = None
     IMGFLIP_PASSWORD: Optional[str] = None
     SYNTHESIA_API_KEY: Optional[str] = None
+    TAVUS_API_KEY: Optional[str]=None
     
     # News API Settings
     NEWS_API_BASE_URL: str = "https://newsapi.org/v2"

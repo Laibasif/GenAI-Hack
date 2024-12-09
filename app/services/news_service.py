@@ -32,7 +32,7 @@ logging.basicConfig(
 class NewsService:
     def __init__(self):
         # NewsData.io API Configuration
-        self.api_key = "pub_6184107e7288c957d2a39e067dcfc74b3f461"  
+        self.api_key = "pub_6163906b7d652c5f80132e7c8b73267cd9156"  
         self.base_url = "https://newsdata.io/api/1/news"
         self.embeddings = OpenAIEmbeddings(
             openai_api_key=os.getenv("OPENAI_API_KEY")
@@ -47,7 +47,7 @@ class NewsService:
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         temperature=0.5,
         max_tokens=1000):
-        print("OPENAI_API_KEY: ", openai_api_key)
+
         return ChatOpenAI(
             model_name=model_name,
             openai_api_key=openai_api_key,
@@ -72,6 +72,8 @@ class NewsService:
                 response = await client.get(self.base_url, params=params)
                 response.raise_for_status()  # Raise an exception for HTTP errors
                 news_data = response.json()
+                print("news")
+                print(news_data.get("results")[0])
                 if 'results' in news_data and news_data['results']:
                     
                     
@@ -123,7 +125,7 @@ class NewsService:
 
         try:
             for news in news_list:
-                document = f"news content: {news.get('description')}. source url: {news.get('link', 'no link')}"
+                document = f"Title: {news.get('title')} news content: {news.get('description')}. source url: {news.get('link', 'no link')}, author:{news.get('source_name', 'No source')}, picture_url: {news.get('image_url')}"
                 metadata = {
                     "source": news.get("source_name", "No source"),
                     "published_at": news.get("pubDate", "None"),
@@ -148,7 +150,7 @@ class NewsService:
             Tone: {tone}
             Context: {context}
             
-            output: {{"summary":"", "source_url": ""}}
+            output: {{"title":"","summary":"", "source_url": "", "picture_url":"","author":""}}
             
             always remember to return a json format and include the source url at the end. make sure it's the actual link and it works.
             

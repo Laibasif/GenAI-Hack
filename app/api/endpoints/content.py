@@ -8,7 +8,9 @@ from fastapi.responses import HTMLResponse
 import google.generativeai as genai
 
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Import the ContentGenerator class
 from app.utils.content_generator import ContentGenerator
 
@@ -16,9 +18,9 @@ from app.utils.content_generator import ContentGenerator
 router = APIRouter(prefix="", tags=["content"])
 
 # Initialize ContentGenerator with your credentials
-TAVUS_API_KEY = 'b2c0cbb7e3484d2496c1c766f49acf5b'  # Replace with your actual Tavus API key
-IMGFLIP_USERNAME = 'ManuAdam'
-IMGFLIP_PASSWORD = 'Cyberme@50'
+TAVUS_API_KEY = os.getenv("TAVUS_API_KEY")  # Replace with your actual Tavus API key
+IMGFLIP_USERNAME = os.getenv("IMGFLIP_USERNAME")
+IMGFLIP_PASSWORD = os.getenv("IMGFLIP_PASSWORD")
 
 content_generator = ContentGenerator(TAVUS_API_KEY, IMGFLIP_USERNAME, IMGFLIP_PASSWORD)
 
@@ -76,7 +78,7 @@ async def generate_content(
         if content_type == "text" or content_type == "post":
             # If content type is text, return the summarized article
             return {
-                "original_article": {"link": news_data.get("source_url","No url found")},
+                "original_article": news_data,
                 "generated_summary": summary,
                 "content_type": "text"
             }

@@ -24,6 +24,7 @@ class MemeGenerator:
         """
         try:
             
+            
             # Use regex to locate the JSON structure in the output
             json_match = re.search(r"\{.*\}", llm_output, re.DOTALL)
             if json_match:

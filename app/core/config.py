@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
 
-class Settings(BaseSettings):
+class Settings():
     PROJECT_NAME: str = "AI Content Generator"
     API_V1_STR: str = "/api/v1"
     
@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     # News API Settings
     NEWS_API_BASE_URL: str = "https://newsapi.org/v2"
     
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
+    # class Config:
+    #     case_sensitive = True
+    #     env_file = ".env"
 
 settings = Settings()

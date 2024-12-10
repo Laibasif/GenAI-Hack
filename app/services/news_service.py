@@ -32,7 +32,7 @@ logging.basicConfig(
 class NewsService:
     def __init__(self):
         # NewsData.io API Configuration
-        self.api_key = "pub_6163906b7d652c5f80132e7c8b73267cd9156"  
+        self.api_key =os.getenv("NEWS_API_KEY")  
         self.base_url = "https://newsdata.io/api/1/news"
         self.embeddings = OpenAIEmbeddings(
             openai_api_key=os.getenv("OPENAI_API_KEY")
